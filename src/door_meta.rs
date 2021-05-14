@@ -50,7 +50,6 @@ pub enum DoorType {
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum BlastShieldType {
-    None,
     Missile,
     PowerBomb,
     Super,
@@ -933,8 +932,8 @@ impl DoorType {
 
 
 impl BlastShieldType {
-    pub fn from_string(string: String) -> Option<Self> {
-        match string.to_lowercase().as_str() {
+    pub fn from_str(string: &str) -> Option<Self> {
+        match string.trim().to_lowercase().as_str() {
             "missile"          => Some(BlastShieldType::Missile      ),
             "missiles"         => Some(BlastShieldType::Missile      ),
             "missile_launcher" => Some(BlastShieldType::Missile      ),
@@ -953,56 +952,130 @@ impl BlastShieldType {
 
     pub const fn cmdl(&self) -> ResId<res_id::CMDL> {
         match self {
+            BlastShieldType::PowerBomb    => custom_asset_ids::POWER_BOMB_BLAST_SHIELD_CMDL,
+            BlastShieldType::Super        => custom_asset_ids::SUPER_BLAST_SHIELD_CMDL,
+            BlastShieldType::Wavebuster   => custom_asset_ids::WAVEBUSTER_BLAST_SHIELD_CMDL,
+            BlastShieldType::Icespreader  => custom_asset_ids::ICESPREADER_BLAST_SHIELD_CMDL,
+            BlastShieldType::Flamethrower => custom_asset_ids::FLAMETHROWER_BLAST_SHIELD_CMDL,
             _ => ResId::new(0xEFDFFB8C), // Vanilla missile lock model
         }
     }
 
-    pub const fn sheet_metal_txtr(&self) -> ResId<res_id::TXTR> {
+    pub const fn metal_body_txtr(&self) -> ResId<res_id::TXTR> {
         match self {
+            BlastShieldType::PowerBomb    => custom_asset_ids::POWER_BOMB_BLAST_SHIELD_TXTR,
+            BlastShieldType::Super        => custom_asset_ids::SUPER_BLAST_SHIELD_TXTR,
+            BlastShieldType::Wavebuster   => custom_asset_ids::WAVEBUSTER_BLAST_SHIELD_TXTR,
+            BlastShieldType::Icespreader  => custom_asset_ids::ICESPREADER_BLAST_SHIELD_TXTR,
+            BlastShieldType::Flamethrower => custom_asset_ids::FLAMETHROWER_BLAST_SHIELD_TXTR,
             _ => ResId::new(0x6E09EA6B), // Vanilla missile lock txtr
         }
     }
 
-    pub const fn glowing_rectangles_txtr(&self) -> ResId<res_id::TXTR> {
+    pub const fn glow_border_txtr(&self) -> ResId<res_id::TXTR> {
         match self {
+            BlastShieldType::PowerBomb    => custom_asset_ids::BLAST_SHIELD_ALT_TXTR0,
+            BlastShieldType::Super        => custom_asset_ids::BLAST_SHIELD_ALT_TXTR0,
+            BlastShieldType::Wavebuster   => custom_asset_ids::BLAST_SHIELD_ALT_TXTR0,
+            BlastShieldType::Icespreader  => custom_asset_ids::BLAST_SHIELD_ALT_TXTR0,
+            BlastShieldType::Flamethrower => custom_asset_ids::BLAST_SHIELD_ALT_TXTR0,
             _ => ResId::new(0x5B97098E), // Vanilla missile lock txtr
         }
     }
 
-    pub const fn misc_rectangles_txtr(&self) -> ResId<res_id::TXTR> {
+    pub const fn glow_trim_txtr(&self) -> ResId<res_id::TXTR> {
         match self {
+            BlastShieldType::PowerBomb    => custom_asset_ids::BLAST_SHIELD_ALT_TXTR1,
+            BlastShieldType::Super        => custom_asset_ids::BLAST_SHIELD_ALT_TXTR1,
+            BlastShieldType::Wavebuster   => custom_asset_ids::BLAST_SHIELD_ALT_TXTR1,
+            BlastShieldType::Icespreader  => custom_asset_ids::BLAST_SHIELD_ALT_TXTR1,
+            BlastShieldType::Flamethrower => custom_asset_ids::BLAST_SHIELD_ALT_TXTR1,
             _ => ResId::new(0x5C7B215C), // Vanilla missile lock txtr
         }
     }
 
-    pub const fn animation_txtr(&self) -> ResId<res_id::TXTR> {
+    pub const fn animated_glow_txtr(&self) -> ResId<res_id::TXTR> {
         match self {
-            _ => ResId::new(0xFA0C2AE8), // Vanilla missile lock txtr
+            BlastShieldType::PowerBomb    => custom_asset_ids::BLAST_SHIELD_ALT_TXTR2,
+            BlastShieldType::Super        => custom_asset_ids::BLAST_SHIELD_ALT_TXTR2,
+            BlastShieldType::Wavebuster   => custom_asset_ids::BLAST_SHIELD_ALT_TXTR2,
+            BlastShieldType::Icespreader  => custom_asset_ids::BLAST_SHIELD_ALT_TXTR2,
+            BlastShieldType::Flamethrower => custom_asset_ids::BLAST_SHIELD_ALT_TXTR2,
+            _ => ResId::new(0xFA0C2AE8), // Vanilla missile lock txtrw
         }
     }
     
-    pub const fn misc_metal_txtr(&self) -> ResId<res_id::TXTR> {
+    pub const fn metal_trim_txtr(&self) -> ResId<res_id::TXTR> {
         match self {
             _ => ResId::new(0xFDE0023A), // Vanilla missile lock txtr
+        }
+    }
+
+    pub const fn scan(&self) -> ResId<res_id::SCAN> {
+        match self {
+            BlastShieldType::PowerBomb    => custom_asset_ids::POWER_BOMB_BLAST_SHIELD_SCAN,
+            BlastShieldType::Super        => custom_asset_ids::SUPER_BLAST_SHIELD_SCAN,
+            BlastShieldType::Wavebuster   => custom_asset_ids::WAVEBUSTER_BLAST_SHIELD_SCAN,
+            BlastShieldType::Icespreader  => custom_asset_ids::ICESPREADER_BLAST_SHIELD_SCAN,
+            BlastShieldType::Flamethrower => custom_asset_ids::FLAMETHROWER_BLAST_SHIELD_SCAN,
+            _ => ResId::invalid(), // Vanilla missile locks do not have scans associated with the actor
+        }
+    }
+
+    pub const fn strg(&self) -> ResId<res_id::STRG> {
+        match self {
+            BlastShieldType::PowerBomb    => custom_asset_ids::POWER_BOMB_BLAST_SHIELD_STRG,
+            BlastShieldType::Super        => custom_asset_ids::SUPER_BLAST_SHIELD_STRG,
+            BlastShieldType::Wavebuster   => custom_asset_ids::WAVEBUSTER_BLAST_SHIELD_STRG,
+            BlastShieldType::Icespreader  => custom_asset_ids::ICESPREADER_BLAST_SHIELD_STRG,
+            BlastShieldType::Flamethrower => custom_asset_ids::FLAMETHROWER_BLAST_SHIELD_STRG,
+            _ => ResId::invalid(), // Vanilla missile locks do not have scans associated with the actor
+        }
+    }
+
+    pub fn scan_text(&self) -> Vec<String> {
+        match self {
+            BlastShieldType::PowerBomb    => vec!["There is an Advanced Blast Shield on the door blocking access. Analysis indicates that the Blast Shield is reinforced\0".to_string(),
+                                                  "\0".to_string(),
+                                                  "with &push;&main-color=#D91818;Bendenzium&pop;, rendering it invulnerable to most weapons.\0".to_string(),
+                                                 ],
+            BlastShieldType::Super        => vec!["There is an Advanced Blast Shield on the door blocking access. Analysis indicates that the Blast Shield is reinforced\0".to_string(),
+                                                  "\0".to_string(),
+                                                  "with &push;&main-color=#D91818;Cordite&pop;, rendering it invulnerable to most weapons.\0".to_string(),
+                                                 ],
+            BlastShieldType::Wavebuster   => vec!["There is an Elemental Blast Shield on the door blocking access. Analysis indicates that the Blast Shield is invulnerable\0".to_string(),
+                                                  "\0".to_string(),
+                                                  "to standard Beam fire. Continuous exposure to &push;&main-color=#D91818;Extreme Amperage&pop; may damage it.\0".to_string(),
+                                                 ],
+            BlastShieldType::Icespreader  => vec!["There is an Elemental Blast Shield on the door blocking access. Analysis indicates that the Blast Shield is invulnerable\0".to_string(),
+                                                  "\0".to_string(),
+                                                  "to standard Beam fire. A concussive blast augmented with &push;&main-color=#D91818;Extreme Cold&pop; may damage it.\0".to_string(),
+                                                 ],
+            BlastShieldType::Flamethrower => vec!["There is an Elemental Blast Shield on the door blocking access. Analysis indicates that the Blast Shield is invulnerable\0".to_string(),
+                                                  "\0".to_string(),
+                                                  "to standard Beam fire. Continuous exposure to &push;&main-color=#D91818;Extreme Heat&pop; may damage it.\0".to_string(),
+                                                 ],
+            _ => vec!["\0".to_string()], // Vanilla missile locks do not have scans associated with the actor
         }
     }
 
     pub fn dependencies(&self) -> Vec<(u32, FourCC)> { // dependencies to add to the area
         
         let mut data: Vec<(u32, FourCC)> = Vec::new();
-        data.push((self.cmdl().to_u32(),                     FourCC::from_bytes(b"CMDL")));
-        data.push((self.sheet_metal_txtr().to_u32(),         FourCC::from_bytes(b"TXTR")));
-        data.push((self.glowing_rectangles_txtr().to_u32(),  FourCC::from_bytes(b"TXTR")));
-        data.push((self.misc_rectangles_txtr().to_u32(),     FourCC::from_bytes(b"TXTR")));
-        data.push((self.animation_txtr().to_u32(),           FourCC::from_bytes(b"TXTR")));
-        data.push((self.misc_metal_txtr().to_u32(),          FourCC::from_bytes(b"TXTR")));
+        data.push((self.cmdl().to_u32(),               FourCC::from_bytes(b"CMDL")));
+        data.push((self.metal_body_txtr().to_u32(),    FourCC::from_bytes(b"TXTR")));
+        data.push((self.glow_border_txtr().to_u32(),   FourCC::from_bytes(b"TXTR")));
+        data.push((self.glow_trim_txtr().to_u32(),     FourCC::from_bytes(b"TXTR")));
+        data.push((self.animated_glow_txtr().to_u32(), FourCC::from_bytes(b"TXTR")));
+        data.push((self.metal_trim_txtr().to_u32(),    FourCC::from_bytes(b"TXTR")));
+        data.push((self.scan().to_u32(),               FourCC::from_bytes(b"SCAN")));
+        data.push((self.strg().to_u32(),               FourCC::from_bytes(b"STRG")));
         data.retain(|i| i.0 != 0xffffffff && i.0 != 0);
         data
     }
 
     pub fn iter() -> impl Iterator<Item = BlastShieldType> {
         [
-            // BlastShieldType::None,
             BlastShieldType::Missile,
             BlastShieldType::PowerBomb,
             BlastShieldType::Super,
@@ -1020,7 +1093,6 @@ impl BlastShieldType {
             BlastShieldType::Wavebuster     => DoorType::Wavebuster.vulnerability(),
             BlastShieldType::Icespreader    => DoorType::Icespreader.vulnerability(),
             BlastShieldType::Flamethrower   => DoorType::Flamethrower.vulnerability(),
-            _ => DoorType::Disabled.vulnerability(),
         }
     }
 }

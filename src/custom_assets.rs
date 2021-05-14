@@ -100,9 +100,40 @@ pub mod custom_asset_ids {
         DISABLED_DOOR_TXTR: TXTR,
         AI_DOOR_TXTR: TXTR,
 
+        // blast shield assets //
+        POWER_BOMB_BLAST_SHIELD_CMDL: CMDL,
+        SUPER_BLAST_SHIELD_CMDL: CMDL,
+        WAVEBUSTER_BLAST_SHIELD_CMDL: CMDL,
+        ICESPREADER_BLAST_SHIELD_CMDL: CMDL,
+        FLAMETHROWER_BLAST_SHIELD_CMDL: CMDL,
+
+        BLAST_SHIELD_ALT_TXTR0: TXTR,
+        BLAST_SHIELD_ALT_TXTR1: TXTR,
+        BLAST_SHIELD_ALT_TXTR2: TXTR,
+
+        POWER_BOMB_BLAST_SHIELD_TXTR: TXTR,
+        SUPER_BLAST_SHIELD_TXTR: TXTR,
+        WAVEBUSTER_BLAST_SHIELD_TXTR: TXTR,
+        ICESPREADER_BLAST_SHIELD_TXTR: TXTR,
+        FLAMETHROWER_BLAST_SHIELD_TXTR: TXTR,
+
+        POWER_BOMB_BLAST_SHIELD_SCAN: SCAN,
+        SUPER_BLAST_SHIELD_SCAN: SCAN,
+        WAVEBUSTER_BLAST_SHIELD_SCAN: SCAN,
+        ICESPREADER_BLAST_SHIELD_SCAN: SCAN,
+        FLAMETHROWER_BLAST_SHIELD_SCAN: SCAN,
+
+        POWER_BOMB_BLAST_SHIELD_STRG: STRG,
+        SUPER_BLAST_SHIELD_STRG: STRG,
+        WAVEBUSTER_BLAST_SHIELD_STRG: STRG,
+        ICESPREADER_BLAST_SHIELD_STRG: STRG,
+        FLAMETHROWER_BLAST_SHIELD_STRG: STRG,
+
         // has to be at the end //
         SKIP_HUDMEMO_STRG_START: STRG,
         SKIP_HUDMEMO_STRG_END: STRG = SKIP_HUDMEMO_STRG_START.to_u32() + 38,
+        
+        END: STRG = SKIP_HUDMEMO_STRG_END.to_u32(),
     }
 }
 
@@ -151,6 +182,14 @@ fn extern_assets<'r>() -> Vec<Resource<'r>>
         (custom_asset_ids::WAVEBUSTER_DOOR_TXTR,      *b"TXTR", include_bytes!("../extra_assets/holorim_wavebuster.txtr")),
         (custom_asset_ids::ICESPREADER_DOOR_TXTR,     *b"TXTR", include_bytes!("../extra_assets/holorim_icespreader.txtr")),
         (custom_asset_ids::FLAMETHROWER_DOOR_TXTR,    *b"TXTR", include_bytes!("../extra_assets/holorim_flamethrower.txtr")),
+        (custom_asset_ids::BLAST_SHIELD_ALT_TXTR0,         *b"TXTR", include_bytes!("../extra_assets/blast_shield_alt_0.txtr")),
+        (custom_asset_ids::BLAST_SHIELD_ALT_TXTR1,         *b"TXTR", include_bytes!("../extra_assets/blast_shield_alt_1.txtr")),
+        (custom_asset_ids::BLAST_SHIELD_ALT_TXTR2,         *b"TXTR", include_bytes!("../extra_assets/blast_shield_alt_2.txtr")),
+        (custom_asset_ids::POWER_BOMB_BLAST_SHIELD_TXTR,   *b"TXTR", include_bytes!("../extra_assets/blast_shield_pbm.txtr")),
+        (custom_asset_ids::SUPER_BLAST_SHIELD_TXTR,        *b"TXTR", include_bytes!("../extra_assets/blast_shield_spr.txtr")),
+        (custom_asset_ids::WAVEBUSTER_BLAST_SHIELD_TXTR,   *b"TXTR", include_bytes!("../extra_assets/blast_shield_wvb.txtr")),
+        (custom_asset_ids::ICESPREADER_BLAST_SHIELD_TXTR,  *b"TXTR", include_bytes!("../extra_assets/blast_shield_ice.txtr")),
+        (custom_asset_ids::FLAMETHROWER_BLAST_SHIELD_TXTR, *b"TXTR", include_bytes!("../extra_assets/blast_shield_flm.txtr")),
     ];
 
     extern_assets.iter().map(|&(res, ref fourcc, bytes)| {
@@ -186,12 +225,12 @@ pub fn custom_assets<'r>(
     assets.extend_from_slice(&create_item_scan_strg_pair(
         custom_asset_ids::PHAZON_SUIT_SCAN,
         custom_asset_ids::PHAZON_SUIT_STRG,
-        "Phazon Suit\0",
+        vec!["Phazon Suit\0".to_string()],
     ));
     assets.extend_from_slice(&create_item_scan_strg_pair(
         custom_asset_ids::NOTHING_SCAN,
         custom_asset_ids::NOTHING_SCAN_STRG,
-        "???\0",
+        vec!["???\0".to_string()],
     ));
     assets.push(build_resource(
         custom_asset_ids::NOTHING_ACQUIRED_HUDMEMO_STRG,
@@ -202,12 +241,12 @@ pub fn custom_assets<'r>(
     assets.extend_from_slice(&create_item_scan_strg_pair(
         custom_asset_ids::THERMAL_VISOR_SCAN,
         custom_asset_ids::THERMAL_VISOR_STRG,
-        "Thermal Visor\0",
+        vec!["Thermal Visor\0".to_string()],
     ));
     assets.extend_from_slice(&create_item_scan_strg_pair(
         custom_asset_ids::SCAN_VISOR_SCAN,
         custom_asset_ids::SCAN_VISOR_SCAN_STRG,
-        "Scan Visor\0",
+        vec!["Scan Visor\0".to_string()],
     ));
     assets.push(build_resource(
         custom_asset_ids::SCAN_VISOR_ACQUIRED_HUDMEMO_STRG,
@@ -218,7 +257,7 @@ pub fn custom_assets<'r>(
     assets.extend_from_slice(&create_item_scan_strg_pair(
         custom_asset_ids::SHINY_MISSILE_SCAN,
         custom_asset_ids::SHINY_MISSILE_SCAN_STRG,
-        "Shiny Missile\0",
+        vec!["Shiny Missile\0".to_string()],
     ));
     assets.extend_from_slice(&create_shiny_missile_assets(resources));
     assets.push(build_resource(
@@ -255,8 +294,31 @@ pub fn custom_assets<'r>(
 
     // Custom door assets
     for door_type in DoorType::iter() {
-        if door_type.shield_cmdl().to_u32() >= 0xDEAF0000 { // only if it doesn't exist in-game already
+        if door_type.shield_cmdl().to_u32() >= 0xDEAF0000 && door_type.shield_cmdl().to_u32() <= custom_asset_ids::END.to_u32() { // only if it doesn't exist in-game already
             assets.push(create_custom_door_cmdl(resources, door_type));
+        }
+    }
+
+    // Custom blast shield assets
+    for blast_shield in BlastShieldType::iter() {
+        if blast_shield.cmdl().to_u32() >= 0xDEAF0000 && blast_shield.cmdl().to_u32() <= custom_asset_ids::END.to_u32() { // only if it doesn't exist in-game already
+            assets.push(create_custom_blast_shield_cmdl(resources, blast_shield));
+
+            if blast_shield.scan() != ResId::invalid() && blast_shield.strg() != ResId::invalid() {
+                assets.extend_from_slice(&create_item_scan_strg_pair(
+                    blast_shield.scan(),
+                    blast_shield.strg(),
+                    blast_shield.scan_text(),
+                ));
+            }
+        } else {
+            // If vanilla CMDL, then it can't depend on custom textures 
+            assert!(
+                blast_shield.dependencies()
+                .iter()
+                .find(|d| d.0 >= 0xDEAF0000 && d.0 <= custom_asset_ids::END.to_u32())
+                .is_none()
+            );
         }
     }
 
@@ -295,7 +357,7 @@ pub fn collect_game_resources<'r>(
             // If this resource is a dependency needed by the patcher, add the resource to the output list //
             let key = (res.file_id, res.fourcc());
             if looking_for.remove(&key) {
-                assert!(found.insert(key, res.into_owned()).is_none());
+                found.insert(key, res.into_owned());
             }
         }
     }
@@ -306,7 +368,7 @@ pub fn collect_game_resources<'r>(
     for res in custom_assets(&found, starting_memo) {
         let key = (res.file_id, res.fourcc());
         looking_for.remove(&key);
-        assert!(found.insert(key, res).is_none());
+        found.insert(key, res);
     }
 
     if !looking_for.is_empty() {
@@ -314,6 +376,40 @@ pub fn collect_game_resources<'r>(
     }
 
     found
+}
+
+fn create_custom_blast_shield_cmdl<'r>(
+    resources: &HashMap<(u32, FourCC),
+    structs::Resource<'r>>,
+    blast_shield_type: BlastShieldType,
+) -> structs::Resource<'r>
+{
+    // Find and read the vanilla blast shield cmdl
+    let old_cmdl = ResourceData::new(&resources[&resource_info!("EFDFFB8C.CMDL").into()]);
+
+    // Create a copy 
+    let old_cmdl_bytes = old_cmdl.decompress().into_owned();
+    let mut new_cmdl = Reader::new(&old_cmdl_bytes[..]).read::<structs::Cmdl>(());
+
+    // Modify the new CMDL to use custom textures
+    new_cmdl.material_sets.as_mut_vec()[0].texture_ids.as_mut_vec()[0] = blast_shield_type.glow_border_txtr();
+    new_cmdl.material_sets.as_mut_vec()[0].texture_ids.as_mut_vec()[1] = blast_shield_type.glow_trim_txtr();
+    new_cmdl.material_sets.as_mut_vec()[0].texture_ids.as_mut_vec()[2] = blast_shield_type.metal_body_txtr();
+    new_cmdl.material_sets.as_mut_vec()[0].texture_ids.as_mut_vec()[3] = blast_shield_type.animated_glow_txtr();
+    new_cmdl.material_sets.as_mut_vec()[0].texture_ids.as_mut_vec()[4] = blast_shield_type.metal_trim_txtr();
+
+    // Re-serialize the CMDL
+    let mut new_cmdl_bytes = vec![];
+    new_cmdl.write_to(&mut new_cmdl_bytes).unwrap();
+
+    // Pad length to multiple of 32 bytes
+    new_cmdl_bytes.extend(reader_writer::pad_bytes(32, new_cmdl_bytes.len()).iter());
+
+    // Return resource
+    build_resource(
+        blast_shield_type.cmdl(),
+        structs::ResourceKind::External(new_cmdl_bytes, b"CMDL".into())
+    )
 }
 
 fn create_custom_door_cmdl<'r>(
@@ -494,7 +590,7 @@ fn create_shiny_missile_assets<'r>(
 fn create_item_scan_strg_pair<'r>(
     new_scan: ResId<res_id::SCAN>,
     new_strg: ResId<res_id::STRG>,
-    contents: &str,
+    content: Vec<String>
 ) -> [structs::Resource<'r>; 2]
 {
     let scan = build_resource(
@@ -510,9 +606,11 @@ fn create_item_scan_strg_pair<'r>(
             _dummy: std::marker::PhantomData,
         }),
     );
+
     let strg = build_resource(
         new_strg,
-        structs::ResourceKind::Strg(structs::Strg::from_strings(vec![contents.to_owned()])),
+        structs::ResourceKind::Strg(structs::Strg::from_strings(content)),
     );
+
     [scan, strg]
 }
